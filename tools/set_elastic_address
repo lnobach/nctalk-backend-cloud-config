@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+
+IFACE=$1
+IPV4ADDR=$2
+IPV6ADDR=$3
+
+#CentOS 8
+
+cat << EOF > /etc/sysconfig/network-scripts/ifcfg-${IFACE}:1
+BOOTPROTO=static
+DEVICE=${IFACE}:1
+IPADDR=${IPV4ADDR}
+PREFIX=32
+TYPE=Ethernet
+USERCTL=no
+ONBOOT=yes
+EOF
+
+echo "IPV6ADDR_SECONDARIES=${IPV6ADDR}/64" >> /etc/sysconfig/network-scripts/ifcfg-${IFACE}
+
+/usr/sbin/ifdown eth0
+/usr/sbin/ifup eth0

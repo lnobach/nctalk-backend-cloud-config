@@ -1,0 +1,189 @@
+#!/usr/bin/env bash
+
+set -e
+
+SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+source $SCRIPTDIR/.env
+
+
+mkdir -p "$CONFIGDIR/proxy/"
+cat << EOF > "$CONFIGDIR/proxy/proxy.conf"
+
+upstream signaling {
+    server spreedbackend:8080;
+}
+
+server {
+    listen 443 ssl http2;
+    server_name $HOSTNAME;
+
+    location /standalone-signaling/ {
+        proxy_pass http://signaling/;
+        proxy_http_version 1.1;
+        proxy_set_header Host \$host;
+        proxy_set_header X-Real-IP \$remote_addr;
+        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+    }
+
+    location /standalone-signaling/spreed {
+        proxy_pass http://signaling/spreed;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade \$http_upgrade;
+        proxy_set_header Connection "Upgrade";
+        proxy_set_header Host \$host;
+        proxy_set_header X-Real-IP \$remote_addr;
+        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+    }
+
+    ssl_certificate /etc/letsencrypt/live/$HOSTNAME/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/$HOSTNAME/privkey.pem;
+
+}
+
+EOF
+
+
+mkdir -p "$CONFIGDIR/spreedbackend/"
+hashkey=$(pwgen 64 1)
+blockkey=$(pwgen 32 1)
+internalsecret=$(pwgen 64 1)
+janussecret=$(pwgen 64 1)
+
+umask 0077
+
+cat << EOF > "$CONFIGDIR/spreedbackend/server.conf"
+[http]
+listen = 0.0.0.0:8080
+
+[app]
+debug = false
+
+[sessions]
+hashkey = $hashkey
+blockkey = $blockkey
+
+[clients]
+internalsecret = $internalsecret
+
+[backend]
+allowed = $NC_ENDPOINT
+allowall = false
+
+# Shared secret for requests from and to the backend servers. This must be the
+# same value as configured in the Nextcloud admin ui.
+secret = $NC_SHAREDSECRET
+timeout = 10
+connectionsperhost = 8
+
+[nats]
+url = nats://nats:4222
+
+[mcu]
+type = janus
+url = ws://janus:8188/janus/
+
+# The maximum bitrate per publishing stream (in bits per second).
+# Defaults to 1 mbit/sec.
+#maxstreambitrate = 1048576
+
+# The maximum bitrate per screensharing stream (in bits per second).
+# Default is 2 mbit/sec.
+#maxscreenbitrate = 2097152
+
+[turn]
+# API key that the MCU will need to send when requesting TURN credentials.
+apikey = $janussecret
+
+# The shared secret to use for generating TURN credentials. This must be the
+# same as on the TURN server.
+secret = $TURNSECRET
+
+# A comma-separated list of TURN servers to use. Leave empty to disable the
+# TURN REST API.
+servers = turns:$HOSTNAME:5349?transport=udp,turns:$HOSTNAME:5349?transport=tcp,turn:coturn:3478?transport=udp,turn:coturn:3478?transport=tcp
+EOF
+
+umask 0022
+mkdir -p "$CONFIGDIR/janus/"
+
+umask 0077
+cat << EOF > "$CONFIGDIR/janus/janus.cfg"
+[general]
+debug_level = 4
+admin_secret = "$janussecret"
+
+[certificates]
+cert_pem = /etc/letsencrypt/live/$HOSTNAME/fullchain.pem
+cert_key = /etc/letsencrypt/live/$HOSTNAME/privkey.pem
+dtls_accept_selfsigned = true
+
+[media]
+ipv6 = true
+rtp_port_range = 20000-20100
+
+[nat]
+nice_debug = true
+ice_ignore_list = "vmnet"
+full_trickle = true
+stun_server = stun.l.google.com
+stun_port = 19302
+EOF
+
+cat << EOF > "$CONFIGDIR/janus/janus.plugin.videoroom.jcfg"
+general: {
+#    admin_key = "$janussecret"
+}
+EOF
+
+cat << EOF > "$CONFIGDIR/janus/janus.transport.websockets.jcfg"
+general: {
+	json = "indented"
+	ws = true
+	ws_port = 8188
+	wss = false
+    wss_port = 8989
+}
+admin: {
+	admin_ws = false
+	admin_ws_port = 7188
+	admin_wss = false
+}
+EOF
+
+cat << EOF > "$CONFIGDIR/janus/janus.transport.http.jcfg"
+general: {
+	json = "indented"
+	base_path = "/janus"
+	http = true
+	port = 8088
+	https = false
+}
+admin: {
+	admin_base_path = "/admin"
+	admin_http = false
+	admin_port = 7088
+	admin_https = false
+}
+EOF
+
+cat << EOF > "$CONFIGDIR/coturn.conf"
+listening-port=3478
+tls-listening-port=5349
+fingerprint
+no-cli
+lt-cred-mech
+use-auth-secret
+static-auth-secret=$TURNSECRET
+realm=$HOSTNAME
+total-quota=100
+bps-capacity=0
+stale-nonce=600
+cert=/etc/letsencrypt/live/$HOSTNAME/cert.pem
+pkey=/etc/letsencrypt/live/$HOSTNAME/privkey.pem
+cipher-list=“ECDHE-RSA-AES256-GCM-SHA512:DHE-RSA-AES256-GCM-SHA512:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-SHA384″
+no-loopback-peers
+no-multicast-peers
+#dh-file=/etc/nginx/ssl/dhparams.pem
+no-tlsv1
+no-tlsv1_1
+EOF

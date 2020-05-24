@@ -1,0 +1,26 @@
+#cloud-config
+
+package_update: true
+
+write_files:
+  - owner: root:root
+    path: /opt/.env
+    permissions: '0600'
+    content: |
+        HOSTNAME=${cc_frontend_domain}
+        CONFIGDIR=/config
+        CERTBOT_EMAIL=${cc_letsencrypt_mail}
+        NC_ENDPOINT=${nc_endpoint}
+        NC_SHAREDSECRET=${nc_sharedsecret}
+        EXTIP=${cc_server_ipv4}
+        TURNSECRET=${turn_sharedsecret}
+
+runcmd:
+    - [ dnf, -y, install, git ]
+    - [ git, clone, 'https://github.com/lnobach/nctalk-backend-cloud-config', /opt/app ]
+    - [ mv, /opt/.env, /opt/app/.env ]
+    - [ /opt/app/tools/security_set_ssh ]
+    - [ /opt/app/tools/set_elastic_address, eth0, '${cc_server_ipv4}', '${cc_server_ipv6}' ]
+    - [ /opt/app/tools/install_docker_compose ]
+    - [ /opt/app/init_config ]
+    - [ /opt/app/init_start ]
