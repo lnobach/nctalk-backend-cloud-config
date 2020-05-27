@@ -49,3 +49,15 @@ resource "hcloud_floating_ip_assignment" "vb_v6" {
   floating_ip_id = hcloud_floating_ip.vb_v6.id
   server_id      = hcloud_server.vb.id
 }
+
+resource "hcloud_rdns" "float_v4" {
+  floating_ip_id = hcloud_floating_ip.vb_v4.id
+  ip_address = hcloud_floating_ip.vb_v4.ip_address
+  dns_ptr = var.frontend_domain
+}
+
+resource "hcloud_rdns" "float_v6" {
+  floating_ip_id = hcloud_floating_ip.vb_v6.id
+  ip_address = cidrhost(hcloud_floating_ip.vb_v6.ip_network, 1)
+  dns_ptr = var.frontend_domain
+}
