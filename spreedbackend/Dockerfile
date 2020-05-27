@@ -7,6 +7,10 @@ RUN apk add --no-cache python3 git make bash curl && \
 
 FROM alpine
 
-COPY --from=gobuilder /ncs/bin/signaling /
+COPY --from=gobuilder /ncs/bin/signaling /app/signaling
+RUN echo "signaling:x:789:789:signaling,,,:/app:/bin/bash" >> /etc/passwd && \
+    echo "signaling:x:789:" >> /etc/group
 
-ENTRYPOINT [ "/signaling",  "--config", "/config/server.conf"]
+USER signaling
+
+ENTRYPOINT [ "/app/signaling", "--config", "/config/server.conf" ]
