@@ -67,10 +67,8 @@ See `terraform/<provider>/README.md` for details.
 
 - You can log in via SSH to your box (root) and follow the cloud-init output during setup with
 `tail -f /var/log/messages | grep cloud-init`.
+- If something beyond cloud-init is not working, try to check the log output of docker-compose first with
+`ssh -t root@<ip> "cd /opt/app; docker-compose logs --tail=100 -f`.
 - It is recommended to have an Elastic IP in place to keep the public address if instances are
 recreated. If you don't want to use it, remove the `/opt/app/tools/set_elastic_address` execution
 from your cloud-config.
-- If your Web frontend is not working, try to check the log output of docker-compose first with
-`ssh -t root@<ip> "cd /opt/jitsi; docker-compose logs --tail=100 -f web"`. If it has failed,
-it might be due to a timing error with assigning the elastic IP. In this case try to restart the `web`
-service with `ssh -t root@<ip> "cd /opt/jitsi; docker-compose restart web"`
