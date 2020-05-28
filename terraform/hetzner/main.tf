@@ -20,9 +20,9 @@ resource "hcloud_server" "vb" {
     cc_server_ipv6      = cidrhost(hcloud_floating_ip.vb_v6.ip_network, 1)
     cc_frontend_domain  = var.frontend_domain
     cc_letsencrypt_mail = var.letsencrypt_mail
-    nc_endpoint         = var.nc_endpoint
-    nc_sharedsecret     = var.nc_sharedsecret
-    turn_sharedsecret   = var.turn_sharedsecret
+    cc_nc_endpoint         = var.nc_endpoint
+    cc_nc_sharedsecret     = var.nc_sharedsecret
+    cc_turn_sharedsecret   = var.turn_sharedsecret
   })
 }
 

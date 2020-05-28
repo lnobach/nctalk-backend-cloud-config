@@ -1,0 +1,19 @@
+
+# The v4 and v6 of your Elastic IP
+cc_server_ipv4=
+cc_server_ipv6=
+
+# The DNS name of the Web frontend. Required for Let's Encrypt.
+cc_frontend_domain=
+
+# The e-mail address passed to Let's Encrypt.
+cc_letsencrypt_mail=
+
+# The domain name of your Nextcloud instance using this backend. If multiple, separate with commata.
+cc_nc_endpoint=
+
+# The shared secret used between Nextcloud and the backend instance. Must be set equally in your Talk settings in Nextcloud.
+cc_nc_sharedsecret=
+
+# The shared secret for the TURN server.  Must be set equally in your Talk settings in Nextcloud.
+cc_turn_sharedsecret=
