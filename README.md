@@ -32,7 +32,7 @@ The following services are automatically spun up via docker-compose:
 correctly work. Protection against simple eavesdropping is given, but not against MITM attacks.
 - Some processes still run as root in Docker, which must be improved from a security point of view.
 
-## How to use - the UI way
+## How to set up - the UI way
 
 - Copy `vars.bash.example` to `vars.bash` and adapt the variables explained there.
 - Run `./make.sh` to generate `cloud-config.yaml`.
@@ -46,12 +46,22 @@ correctly work. Protection against simple eavesdropping is given, but not agains
 enter your secret key.
 - Enjoy your Nextcloud Talk backend via Web using your DNS name :)
 
-## How to use - the Terraform way
+## How to set up - the Terraform way
 
 There are Terraform implementations available.
 See `terraform/<provider>/README.md` for details.
 
 - [hetzner - Hetzner Cloud](./terraform/hetzner)
+
+## How to tell Nextcloud to use your new backend
+
+- Under *Settings*, go to the *Talk* section.
+- Create a new STUN server `<domainname>:5349`. You can optionally delete the others.
+- Create a new TURN server `<domainname>:5349` and enter your TURN shared secret as previously chosen in the variables (variable `turn_sharedsecret`).
+- Enter the data of the signaling server:
+  - `https://<domainname>/standalone-signaling`
+  - Enable checking of the SSL certificate
+  - Enter the shared secret (variable `nc_sharedsecret`).
 
 ## Troubleshooting and Insights
 
