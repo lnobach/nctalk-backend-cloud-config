@@ -123,7 +123,7 @@ ipv6 = true
 rtp_port_range = 20000-20100
 
 [nat]
-nice_debug = true
+nice_debug = false
 ice_ignore_list = "vmnet"
 full_trickle = true
 stun_server = stun.l.google.com

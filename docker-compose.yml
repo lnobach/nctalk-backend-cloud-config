@@ -18,7 +18,7 @@ services:
     spreedbackend:
         restart: unless-stopped
         hostname: spreedbackend
-        image: lnobach/spreed-signaling:leo-dev
+        image: lnobach/spreed-signaling:0.1.1
         expose:
             - '8443'
         volumes:
