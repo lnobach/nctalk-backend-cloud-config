@@ -18,7 +18,7 @@ services:
     spreedbackend:
         restart: unless-stopped
         hostname: spreedbackend
-        image: lnobach/spreed-signaling:0.1.2
+        image: lnobach/spreed-signaling:0.1.3
         expose:
             - '8443'
         volumes:
@@ -49,7 +49,7 @@ services:
     coturn:
         restart: unless-stopped
         hostname: coturn
-        image: instrumentisto/coturn
+        image: instrumentisto/coturn:4.5.1
         volumes:
             - ${CONFIGDIR}/coturn.conf:/etc/coturn/turnserver.conf:ro
             - ${CONFIGDIR}/letsencrypt:/etc/letsencrypt:ro
