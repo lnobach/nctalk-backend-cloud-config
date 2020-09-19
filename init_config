@@ -102,7 +102,7 @@ secret = $TURNSECRET
 # TURN REST API.
 servers = turns:$HOSTNAME:5349?transport=udp,turns:$HOSTNAME:5349?transport=tcp,turn:coturn:3478?transport=udp,turn:coturn:3478?transport=tcp
 EOF
-chgrp 789 "$CONFIGDIR/spreedbackend/server.conf"
+chgrp 1000 "$CONFIGDIR/spreedbackend/server.conf"
 
 umask 0022
 mkdir -p "$CONFIGDIR/janus/"
@@ -114,8 +114,8 @@ debug_level = 4
 admin_secret = "$janussecret"
 
 [certificates]
-cert_pem = /etc/letsencrypt/live/$HOSTNAME/fullchain.pem
-cert_key = /etc/letsencrypt/live/$HOSTNAME/privkey.pem
+cert_pem = /etc/janus/janus.crt
+cert_key = /etc/janus/janus.key
 dtls_accept_selfsigned = true
 
 [media]

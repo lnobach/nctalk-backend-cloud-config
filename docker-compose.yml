@@ -41,6 +41,9 @@ services:
             - '8188'
         ports:
             - "20000-20100:20000-20100/udp"
+        environment:
+            - COPYCERT=/etc/letsencrypt/live/${HOSTNAME}/fullchain.pem
+            - COPYKEY=/etc/letsencrypt/live/${HOSTNAME}/privkey.pem
         volumes:
             - ${CONFIGDIR}/janus:/config:ro
             - ${CONFIGDIR}/letsencrypt:/etc/letsencrypt:ro
