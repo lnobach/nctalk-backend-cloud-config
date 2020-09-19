@@ -104,7 +104,7 @@ servers = turns:$HOSTFQDN:5349?transport=udp,turns:$HOSTFQDN:5349?transport=tcp,
 EOF
 chgrp 1000 "$CONFIGDIR/spreedbackend/server.conf"
 
-umask 0037
+umask 0027
 mkdir -p "$CONFIGDIR/janus/"
 
 umask 0037
