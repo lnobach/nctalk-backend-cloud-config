@@ -5,6 +5,7 @@ set -e
 SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 source $SCRIPTDIR/.env
 
+JANUS_GID=1000
 
 mkdir -p "$CONFIGDIR/proxy/"
 cat << EOF > "$CONFIGDIR/proxy/proxy.conf"
@@ -106,6 +107,7 @@ chgrp 1000 "$CONFIGDIR/spreedbackend/server.conf"
 
 umask 0027
 mkdir -p "$CONFIGDIR/janus/"
+chgrp "$JANUS_GID" "$CONFIGDIR/janus"
 
 umask 0037
 cat << EOF > "$CONFIGDIR/janus/janus.cfg"
@@ -166,8 +168,8 @@ admin: {
 	admin_https = false
 }
 EOF
-chgrp 1000 "$CONFIGDIR/janus/janus.cfg"
-chgrp 1000 "$CONFIGDIR"/janus/*.jcfg
+chgrp "$JANUS_GID" "$CONFIGDIR/janus/janus.cfg"
+chgrp "$JANUS_GID" "$CONFIGDIR"/janus/*.jcfg
 
 cat << EOF > "$CONFIGDIR/coturn.conf"
 listening-port=3478
