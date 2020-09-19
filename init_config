@@ -15,7 +15,7 @@ upstream signaling {
 
 server {
     listen 443 ssl http2;
-    server_name $HOSTNAME;
+    server_name $HOSTFQDN;
 
     location /standalone-signaling/ {
         proxy_pass http://signaling/;
@@ -35,8 +35,8 @@ server {
         proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
     }
 
-    ssl_certificate /etc/letsencrypt/live/$HOSTNAME/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/$HOSTNAME/privkey.pem;
+    ssl_certificate /etc/letsencrypt/live/$HOSTFQDN/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/$HOSTFQDN/privkey.pem;
 
 }
 
@@ -100,14 +100,14 @@ secret = $TURNSECRET
 
 # A comma-separated list of TURN servers to use. Leave empty to disable the
 # TURN REST API.
-servers = turns:$HOSTNAME:5349?transport=udp,turns:$HOSTNAME:5349?transport=tcp,turn:coturn:3478?transport=udp,turn:coturn:3478?transport=tcp
+servers = turns:$HOSTFQDN:5349?transport=udp,turns:$HOSTFQDN:5349?transport=tcp,turn:coturn:3478?transport=udp,turn:coturn:3478?transport=tcp
 EOF
 chgrp 1000 "$CONFIGDIR/spreedbackend/server.conf"
 
-umask 0022
+umask 0037
 mkdir -p "$CONFIGDIR/janus/"
 
-umask 0077
+umask 0037
 cat << EOF > "$CONFIGDIR/janus/janus.cfg"
 [general]
 debug_level = 4
@@ -166,6 +166,7 @@ admin: {
 	admin_https = false
 }
 EOF
+chgrp 1000 "$CONFIGDIR/janus/*.conf"
 
 cat << EOF > "$CONFIGDIR/coturn.conf"
 listening-port=3478
@@ -175,12 +176,12 @@ no-cli
 lt-cred-mech
 use-auth-secret
 static-auth-secret=$TURNSECRET
-realm=$HOSTNAME
+realm=$HOSTFQDN
 total-quota=100
 bps-capacity=0
 stale-nonce=600
-cert=/etc/letsencrypt/live/$HOSTNAME/cert.pem
-pkey=/etc/letsencrypt/live/$HOSTNAME/privkey.pem
+cert=/etc/letsencrypt/live/$HOSTFQDN/cert.pem
+pkey=/etc/letsencrypt/live/$HOSTFQDN/privkey.pem
 cipher-list=“ECDHE-RSA-AES256-GCM-SHA512:DHE-RSA-AES256-GCM-SHA512:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-SHA384″
 no-loopback-peers
 no-multicast-peers

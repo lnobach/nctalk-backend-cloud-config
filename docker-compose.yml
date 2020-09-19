@@ -36,14 +36,14 @@ services:
         restart: unless-stopped
         hostname: spreedbackend
         image: lnobach/janus-gateway:0.10.5
-        command: ["/usr/local/bin/janus", "-F", "/config", "-C", "/config/janus.cfg", "--nat-1-1=${EXTIP}"]
+        command: ["/entrypoint", "-F", "/config", "-C", "/config/janus.cfg", "--nat-1-1=${EXTIP}"]
         expose:
             - '8188'
         ports:
             - "20000-20100:20000-20100/udp"
         environment:
-            - COPYCERT=/etc/letsencrypt/live/${HOSTNAME}/fullchain.pem
-            - COPYKEY=/etc/letsencrypt/live/${HOSTNAME}/privkey.pem
+            - COPYCERT=/etc/letsencrypt/live/${HOSTFQDN}/fullchain.pem
+            - COPYKEY=/etc/letsencrypt/live/${HOSTFQDN}/privkey.pem
         volumes:
             - ${CONFIGDIR}/janus:/config:ro
             - ${CONFIGDIR}/letsencrypt:/etc/letsencrypt:ro
