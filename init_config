@@ -166,7 +166,8 @@ admin: {
 	admin_https = false
 }
 EOF
-chgrp 1000 "$CONFIGDIR/janus/*.conf"
+chgrp 1000 "$CONFIGDIR/janus/janus.cfg"
+chgrp 1000 "$CONFIGDIR/janus/*.jcfg"
 
 cat << EOF > "$CONFIGDIR/coturn.conf"
 listening-port=3478
