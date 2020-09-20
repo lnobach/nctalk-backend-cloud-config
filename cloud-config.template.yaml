@@ -7,7 +7,7 @@ write_files:
     path: /opt/.env
     permissions: '0600'
     content: |
-        HOSTNAME=${cc_frontend_domain}
+        HOSTFQDN=${cc_frontend_domain}
         CONFIGDIR=/config
         CERTBOT_EMAIL=${cc_letsencrypt_mail}
         NC_ENDPOINT=${cc_nc_endpoint}
