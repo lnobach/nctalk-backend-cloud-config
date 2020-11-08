@@ -17,7 +17,7 @@ write_files:
 
 runcmd:
     - [ dnf, -y, install, git ]
-    - [ git, clone, 'https://github.com/lnobach/nctalk-backend-cloud-config', '-b', 'leo-dev', '/opt/app ]
+    - [ git, clone, 'https://github.com/lnobach/nctalk-backend-cloud-config', '-b', leo-dev, /opt/app ]
     - [ mv, /opt/.env, /opt/app/.env ]
     - [ /opt/app/tools/security_set_ssh ]
     - [ /opt/app/tools/set_elastic_address, eth0, '${cc_server_ipv4}', '${cc_server_ipv6}' ]
