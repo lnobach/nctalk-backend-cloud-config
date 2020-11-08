@@ -35,7 +35,7 @@ services:
     janus:
         restart: unless-stopped
         hostname: spreedbackend
-        image: lnobach/janus-gateway:0.10.5
+        image: lnobach/janus-gateway:0.10.7
         command: ["/entrypoint", "-F", "/config", "-C", "/config/janus.cfg", "--nat-1-1=${EXTIP}"]
         expose:
             - '8188'
