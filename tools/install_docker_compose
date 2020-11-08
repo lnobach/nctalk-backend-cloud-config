@@ -3,8 +3,7 @@
 # CentOS 8
 
 dnf config-manager --add-repo=https://download.docker.com/linux/centos/docker-ce.repo
-dnf -y install https://download.docker.com/linux/centos/7/x86_64/stable/Packages/containerd.io-1.2.13-3.2.el7.x86_64.rpm
-dnf -y install docker-ce git
+dnf -y install docker-ce
 systemctl enable docker
 systemctl start docker
 curl -L https://github.com/docker/compose/releases/download/$(curl -s https://api.github.com/repos/docker/compose/releases/latest | grep "tag_name" | cut -d \" -f4)/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose
