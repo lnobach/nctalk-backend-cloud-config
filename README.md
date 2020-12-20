@@ -26,11 +26,19 @@ The following services are automatically spun up via docker-compose:
 - **nats**: NATS streaming server because required by spreedbackend.
 - **coturn** TURN relay. Ports 3478,5349 (TCP/UDP) and 49160-49200 (UDP) exposed to public.
 
-## Current shortcomings
+To increase security and trust in the container images provided by me, all of them are Docker Hub autobuilds 
+from GitHub code:
+
+- [lnobach/nginx-certbot](https://hub.docker.com/r/lnobach/nginx-certbot), based on a fork of [staticfloat/docker-nginx-certbot](https://github.com/staticfloat/docker-nginx-certbot),
+- [lnobach/nextcloud-spreed-signaling](https://hub.docker.com/r/lnobach/nextcloud-spreed-signaling), based on a fork of [strukturag/nextcloud-spreed-signaling](https://github.com/strukturag/nextcloud-spreed-signaling),
+- [lnobach/janus-gateway](https://hub.docker.com/r/lnobach/janus-gateway), based on [lnobach/janus-docker-builder
+](https://github.com/lnobach/janus-docker-builder).
+
+## Open issues
 
 - Certificate checking for WebRTC DTLS encryption is currently **disabled**, because the certificates validity checking does not 
-correctly work. Protection against simple eavesdropping is given, but not against MITM attacks.
-- Some processes still run as root in Docker, which must be improved from a security point of view.
+correctly work. Note that this [is a general issue of WebRTC DTLS](https://github.com/meetecho/janus-gateway/blob/5ec8568709c483ae89b1aa77e127d14c3b59428c/conf/janus.jcfg.sample.in#L162) and is probably OK for now, but be aware of it. 
+- A small fraction of processes still run as root in Docker, which must be improved from a security point of view.
 
 ## How to set up - the UI way
 

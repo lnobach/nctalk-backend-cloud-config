@@ -2,7 +2,7 @@ version: "3"
 
 services:
     proxy:
-        image: staticfloat/nginx-certbot
+        image: lnobach/nginx-certbot
         restart: unless-stopped
         hostname: proxy
         ports:
@@ -18,7 +18,7 @@ services:
     spreedbackend:
         restart: unless-stopped
         hostname: spreedbackend
-        image: lnobach/nextcloud-spreed-signaling:0.1.0
+        image: lnobach/nextcloud-spreed-signaling:0.2.0
         expose:
             - '8443'
         volumes:
@@ -35,7 +35,7 @@ services:
     janus:
         restart: unless-stopped
         hostname: spreedbackend
-        image: lnobach/janus-gateway:0.10.7
+        image: lnobach/janus-gateway:0.10.8
         command: ["/entrypoint", "-F", "/config", "-C", "/config/janus.cfg", "--nat-1-1=${EXTIP}"]
         expose:
             - '8188'
