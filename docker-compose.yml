@@ -35,7 +35,7 @@ services:
     janus:
         restart: unless-stopped
         hostname: spreedbackend
-        image: lnobach/janus-gateway:0.10.8
+        image: lnobach/janus-gateway:0.10.9
         command: ["/entrypoint", "-F", "/config", "-C", "/config/janus.cfg", "--nat-1-1=${EXTIP}"]
         expose:
             - '8188'
@@ -52,7 +52,7 @@ services:
     coturn:
         restart: unless-stopped
         hostname: coturn
-        image: instrumentisto/coturn:4.5.1
+        image: instrumentisto/coturn:4.5.2
         volumes:
             - ${CONFIGDIR}/coturn.conf:/etc/coturn/turnserver.conf:ro
             - ${CONFIGDIR}/letsencrypt:/etc/letsencrypt:ro
