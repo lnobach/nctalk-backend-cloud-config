@@ -8,7 +8,10 @@ source $SCRIPTDIR/.env
 JANUS_GID=1000
 
 mkdir -p "$CONFIGDIR/proxy/"
-cat << EOF > "$CONFIGDIR/proxy/proxy.conf"
+cat << EOF > "$CONFIGDIR/proxy/makeproxy.conf.sh"
+#!/bin/bash
+
+cat << EOG > "/etc/nginx/conf.d/proxy.conf"
 
 upstream signaling {
     server spreedbackend:8080;
@@ -21,28 +24,33 @@ server {
     location /standalone-signaling/ {
         proxy_pass http://signaling/;
         proxy_http_version 1.1;
-        proxy_set_header Host \$host;
-        proxy_set_header X-Real-IP \$remote_addr;
-        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+        proxy_set_header Host \\\$host;
+        proxy_set_header X-Real-IP \\\$remote_addr;
+        proxy_set_header X-Forwarded-For \\\$proxy_add_x_forwarded_for;
     }
 
     location /standalone-signaling/spreed {
         proxy_pass http://signaling/spreed;
         proxy_http_version 1.1;
-        proxy_set_header Upgrade \$http_upgrade;
+        proxy_set_header Upgrade \\\$http_upgrade;
         proxy_set_header Connection "Upgrade";
-        proxy_set_header Host \$host;
-        proxy_set_header X-Real-IP \$remote_addr;
-        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+        proxy_set_header Host \\\$host;
+        proxy_set_header X-Real-IP \\\$remote_addr;
+        proxy_set_header X-Forwarded-For \\\$proxy_add_x_forwarded_for;
     }
 
     ssl_certificate /etc/letsencrypt/live/$HOSTFQDN/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/$HOSTFQDN/privkey.pem;
+    ssl_trusted_certificate /etc/letsencrypt/live/$HOSTFQDN/chain.pem;
+    ssl_dhparam /etc/letsencrypt/dhparams/dhparam.pem;
 
 }
 
+EOG
+
 EOF
 
+chmod 755 $CONFIGDIR/proxy/makeproxy.conf.sh
 
 mkdir -p "$CONFIGDIR/spreedbackend/"
 hashkey=$(pwgen 64 1)

@@ -2,15 +2,15 @@ version: "3"
 
 services:
     proxy:
-        image: lnobach/nginx-certbot
+        image: jonasal/nginx-certbot:1.2.0
         restart: unless-stopped
         hostname: proxy
         ports:
             - 80:80
             - 443:443
         volumes:
-            - ${CONFIGDIR}/proxy:/etc/nginx/user.conf.d:ro
             - ${CONFIGDIR}/letsencrypt:/etc/letsencrypt
+            - ${CONFIGDIR}/proxy/makeproxy.conf.sh:/docker-entrypoint.d/05-makeconf.sh
         environment:
             - CERTBOT_EMAIL
         networks:
@@ -26,7 +26,7 @@ services:
         networks:
             spreedbackend:
     nats:
-        image: nats
+        image: nats:2.2.1
         hostname: nats
         expose:
             - '4222'
@@ -35,7 +35,7 @@ services:
     janus:
         restart: unless-stopped
         hostname: spreedbackend
-        image: lnobach/janus-gateway:0.10.9
+        image: lnobach/janus-gateway:0.11.1
         command: ["/entrypoint", "-F", "/config", "-C", "/config/janus.cfg", "--nat-1-1=${EXTIP}"]
         expose:
             - '8188'
