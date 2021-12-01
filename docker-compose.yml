@@ -18,7 +18,7 @@ services:
     spreedbackend:
         restart: unless-stopped
         hostname: spreedbackend
-        image: ghcr.io/lnobach/nextcloud-spreed-signaling:0.3.0
+        image: ghcr.io/lnobach/nextcloud-spreed-signaling:0.4.0
         expose:
             - '8443'
         volumes:
