@@ -192,8 +192,8 @@ realm=$HOSTFQDN
 total-quota=100
 bps-capacity=0
 stale-nonce=600
-cert=/etc/letsencrypt/live/$HOSTFQDN/cert.pem
-pkey=/etc/letsencrypt/live/$HOSTFQDN/privkey.pem
+cert=/etc/coturn/janus.crt
+pkey=/etc/coturn/janus.key
 cipher-list=“ECDHE-RSA-AES256-GCM-SHA512:DHE-RSA-AES256-GCM-SHA512:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-SHA384″
 no-loopback-peers
 no-multicast-peers

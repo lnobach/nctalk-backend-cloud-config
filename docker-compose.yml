@@ -52,7 +52,10 @@ services:
     coturn:
         restart: unless-stopped
         hostname: coturn
-        image: coturn/coturn:4.5.2
+        image: ghcr.io/lnobach/coturn:4.5.2-alpine
+        environment:
+            - COPYCERT=/etc/letsencrypt/live/${HOSTFQDN}/fullchain.pem
+            - COPYKEY=/etc/letsencrypt/live/${HOSTFQDN}/privkey.pem
         volumes:
             - ${CONFIGDIR}/coturn.conf:/etc/coturn/turnserver.conf:ro
             - ${CONFIGDIR}/letsencrypt:/etc/letsencrypt:ro
