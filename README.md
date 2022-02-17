@@ -46,7 +46,7 @@ correctly work. Note that this [is a general issue of WebRTC DTLS](https://githu
 - Run `./make.sh` to generate `cloud-config.yaml`.
 - Create a new Elastic IP (v4 and v6).
 - Let a DNS A and AAAA record point to the Elastic IP.
-- Create a new VM with a CentOS 8 image and supply the content of `cloud-config.yaml` as user data. 
+- Create a new VM with a Rocky Linux 8 image and supply the content of `cloud-config.yaml` as user data. 
 **SSH public key authentication will be enforced.**
 - Assign the Elastic IP to your VM.
 - Wait a couple of minutes.

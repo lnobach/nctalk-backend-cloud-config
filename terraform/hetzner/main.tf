@@ -9,7 +9,7 @@ data "hcloud_ssh_keys" "my_keys" {
 
 resource "hcloud_server" "vb" {
   backups     = false
-  image       = "centos-8"
+  image       = "rocky-8"
   labels      = {}
   location    = var.location
   name        = var.name
