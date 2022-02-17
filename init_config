@@ -6,6 +6,7 @@ SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 source $SCRIPTDIR/.env
 
 JANUS_GID=1000
+COTURN_GID=65534 #nogroup
 
 mkdir -p "$CONFIGDIR/proxy/"
 cat << EOF > "$CONFIGDIR/proxy/makeproxy.conf.sh"
@@ -200,3 +201,4 @@ no-multicast-peers
 no-tlsv1
 no-tlsv1_1
 EOF
+chgrp "$COTURN_GID" "$CONFIGDIR"/coturn.conf
