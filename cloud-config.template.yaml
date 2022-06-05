@@ -1,8 +1,29 @@
 #cloud-config
-
 package_update: true
+package_upgrade: true
 
 write_files:
+  - path: /etc/yum.repos.d/docker-ce.repo
+    permissions: '0644'
+    content: |
+      [docker-ce-stable]
+      name=Docker CE Stable - $basearch
+      baseurl=https://download.docker.com/linux/rhel/9/$basearch/stable
+      enabled=1
+      gpgcheck=1
+      gpgkey=https://download.docker.com/linux/rhel/gpg
+  - path: /etc/ssh/sshd_config.d/01-ssh-hardening.conf
+    content: |
+      PasswordAuthentication no
+      Port ${cc_ssh_port}
+      GSSAPIAuthentication no
+      KbdInteractiveAuthentication no
+      ChallengeResponseAuthentication no
+      MaxAuthTries 2
+      AllowTcpForwarding no
+      X11Forwarding no
+      AllowAgentForwarding no
+      AuthorizedKeysFile .ssh/authorized_keys
   - owner: root:root
     path: /opt/.env
     permissions: '0600'
@@ -15,12 +36,22 @@ write_files:
         EXTIP=${cc_server_ipv4}
         TURNSECRET=${cc_turn_sharedsecret}
 
+
+packages:
+  - docker-ce
+  - docker-ce-cli
+  - containerd.io
+  - docker-buildx-plugin
+  - docker-compose-plugin
+  - net-tools
+  - tcpdump
+  - git
+
 runcmd:
-    - [ dnf, -y, install, git ]
-    - [ git, clone, 'https://github.com/lnobach/nctalk-backend-cloud-config', /opt/app ]
-    - [ mv, /opt/.env, /opt/app/.env ]
-    - [ /opt/app/tools/security_set_ssh ]
-    - [ /opt/app/tools/set_elastic_address, eth0, '${cc_server_ipv4}', '${cc_server_ipv6}' ]
-    - [ /opt/app/tools/install_docker_compose ]
-    - [ /opt/app/init_config ]
-    - [ /opt/app/init_start ]
+  - systemctl enable --now docker
+  - docker --version
+  - docker compose version
+  - git clone 'https://github.com/lnobach/nctalk-backend-cloud-config' -b leo-dev /opt/app
+  - mv /opt/.env /opt/app/.env
+  - /opt/app/init_config
+  - /opt/app/init_start

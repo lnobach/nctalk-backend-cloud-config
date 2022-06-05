@@ -54,10 +54,10 @@ EOF
 chmod 755 $CONFIGDIR/proxy/makeproxy.conf.sh
 
 mkdir -p "$CONFIGDIR/spreedbackend/"
-hashkey=$(pwgen 64 1)
-blockkey=$(pwgen 32 1)
-internalsecret=$(pwgen 64 1)
-janussecret=$(pwgen 64 1)
+hashkey=$(openssl rand -base64 64)
+blockkey=$(openssl rand -base64 32)
+internalsecret=$(openssl rand -base64 64)
+janussecret=$(openssl rand -base64 64)
 
 umask 0037
 

@@ -1,8 +1,3 @@
-
-# The v4 and v6 of your Elastic IP
-cc_server_ipv4=
-cc_server_ipv6=
-
 # The DNS name of the Web frontend. Required for Let's Encrypt.
 cc_frontend_domain=
 

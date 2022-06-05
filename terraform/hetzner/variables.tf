@@ -21,6 +21,11 @@ variable "nc_sharedsecret" {}
 
 variable "turn_sharedsecret" {}
 
+variable "ssh_port" {
+  description = "SSH admin port"
+  default     = "22"
+}
+
 variable "name" {
   description = "Name (prefix) of the infrastructure components"
   default     = "vb"
