@@ -12,3 +12,6 @@ cc_nc_sharedsecret=
 
 # The shared secret for the TURN server.  Must be set equally in your Talk settings in Nextcloud.
 cc_turn_sharedsecret=
+
+# The SSH port for admin/debugging access (set to 22 for default)
+cc_ssh_port=

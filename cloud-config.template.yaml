@@ -24,10 +24,15 @@ write_files:
       X11Forwarding no
       AllowAgentForwarding no
       AuthorizedKeysFile .ssh/authorized_keys
+  - path: /etc/docker/daemon.json
+    permissions: '0644'
+    content: |
+      {"bridge":"none"}
   - owner: root:root
     path: /opt/.env
     permissions: '0600'
     content: |
+        SSH_PORT=${cc_ssh_port}
         HOSTFQDN=${cc_frontend_domain}
         CONFIGDIR=/config
         CERTBOT_EMAIL=${cc_letsencrypt_mail}
@@ -43,15 +48,19 @@ packages:
   - containerd.io
   - docker-buildx-plugin
   - docker-compose-plugin
+  - iptables-services
   - net-tools
   - tcpdump
   - git
 
 runcmd:
   - systemctl enable --now docker
+  - systemctl enable iptables
+  - systemctl enable ip6tables
   - docker --version
   - docker compose version
-  - git clone 'https://github.com/lnobach/nctalk-backend-cloud-config' -b leo-dev /opt/app
+  - git clone --depth=1 -b leo-dev 'https://github.com/lnobach/nctalk-backend-cloud-config' /opt/app
   - mv /opt/.env /opt/app/.env
+  - /opt/app/set_iptables --save
   - /opt/app/init_config
   - /opt/app/init_start
