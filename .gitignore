@@ -1,0 +1,2 @@
+terraform/hetzner/.terraform*
+terraform/hetzner/terraform.tfstate*

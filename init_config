@@ -8,6 +8,10 @@ source $SCRIPTDIR/.env
 JANUS_GID=1000
 COTURN_GID=65534 #nogroup
 
+function makepw() {
+    tr -dc A-Za-z0-9 </dev/urandom | head -c $1; echo
+}
+
 mkdir -p "$CONFIGDIR/proxy/"
 cat << EOF > "$CONFIGDIR/proxy/makeproxy.conf.sh"
 #!/bin/bash
@@ -15,11 +19,12 @@ cat << EOF > "$CONFIGDIR/proxy/makeproxy.conf.sh"
 cat << EOG > "/etc/nginx/conf.d/proxy.conf"
 
 upstream signaling {
-    server spreedbackend:8080;
+    server [::1]:8080;
 }
 
 server {
-    listen 443 ssl http2;
+    listen 443 ssl;
+    http2 on;
     server_name $HOSTFQDN;
 
     location /standalone-signaling/ {
@@ -54,16 +59,16 @@ EOF
 chmod 755 $CONFIGDIR/proxy/makeproxy.conf.sh
 
 mkdir -p "$CONFIGDIR/spreedbackend/"
-hashkey=$(pwgen 64 1)
-blockkey=$(pwgen 32 1)
-internalsecret=$(pwgen 64 1)
-janussecret=$(pwgen 64 1)
+hashkey=$(makepw 64)
+blockkey=$(makepw 32)
+internalsecret=$(makepw 64)
+janussecret=$(makepw 64)
 
 umask 0037
 
 cat << EOF > "$CONFIGDIR/spreedbackend/server.conf"
 [http]
-listen = 0.0.0.0:8080
+listen = [::1]:8080
 
 [app]
 debug = false
@@ -86,11 +91,11 @@ timeout = 10
 connectionsperhost = 8
 
 [nats]
-url = nats://nats:4222
+url = nats://localhost:4222
 
 [mcu]
 type = janus
-url = ws://janus:8188/janus/
+url = ws://localhost:8188/janus/
 
 # The maximum bitrate per publishing stream (in bits per second).
 # Defaults to 1 mbit/sec.
@@ -110,7 +115,7 @@ secret = $TURNSECRET
 
 # A comma-separated list of TURN servers to use. Leave empty to disable the
 # TURN REST API.
-servers = turns:$HOSTFQDN:5349?transport=udp,turns:$HOSTFQDN:5349?transport=tcp,turn:coturn:3478?transport=udp,turn:coturn:3478?transport=tcp
+servers = turns:$HOSTFQDN:5349?transport=udp,turns:$HOSTFQDN:5349?transport=tcp,turn:localhost:3478?transport=udp,turn:localhost:3478?transport=tcp
 EOF
 chgrp 1000 "$CONFIGDIR/spreedbackend/server.conf"
 

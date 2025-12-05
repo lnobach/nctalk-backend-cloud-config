@@ -1,8 +1,0 @@
-#/usr/bin/env bash
-
-sed -i 's|[#]*PasswordAuthentication yes|PasswordAuthentication no|g' /etc/ssh/sshd_config
-sed -i 's|ChallengeResponseAuthentication yes|ChallengeResponseAuthentication no|g' /etc/ssh/sshd_config
-sed -i 's|GSSAPIAuthentication yes|GSSAPIAuthentication no|g' /etc/ssh/sshd_config
-dnf -y install epel-release
-dnf -y install nano htop pwgen
-/bin/systemctl restart sshd.service 

@@ -1,8 +1,3 @@
-
-# The v4 and v6 of your Elastic IP
-cc_server_ipv4=
-cc_server_ipv6=
-
 # The DNS name of the Web frontend. Required for Let's Encrypt.
 cc_frontend_domain=
 
@@ -17,3 +12,6 @@ cc_nc_sharedsecret=
 
 # The shared secret for the TURN server.  Must be set equally in your Talk settings in Nextcloud.
 cc_turn_sharedsecret=
+
+# The SSH port for admin/debugging access (set to 22 for default)
+cc_ssh_port=

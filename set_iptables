@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+
+set -e
+
+SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+source $SCRIPTDIR/.env
+
+function ip46tables {
+    iptables "$@"
+    ip6tables "$@"
+}
+
+echo "Setting ip(6)tables rules..."
+
+ip46tables -F
+ip46tables -X
+ip46tables -A INPUT -i lo -j ACCEPT
+ip46tables -A INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
+iptables -A INPUT -p icmp -j ACCEPT
+ip6tables -A INPUT -p ipv6-icmp -j ACCEPT
+ip46tables -A INPUT -p tcp --dport "$SSH_PORT" -j ACCEPT
+ip46tables -A INPUT -p tcp --dport 80 -j ACCEPT
+ip46tables -A INPUT -p tcp --dport 443 -j ACCEPT
+ip46tables -A INPUT -p udp --dport 20000:20100 -j ACCEPT # janus
+ip46tables -A INPUT -p udp --dport 3478 -j ACCEPT # coturn
+ip46tables -A INPUT -p tcp --dport 3478 -j ACCEPT # coturn
+ip46tables -A INPUT -p udp --dport 5349 -j ACCEPT # coturn
+ip46tables -A INPUT -p tcp --dport 5349 -j ACCEPT # coturn
+ip46tables -A INPUT -j REJECT
+
+if [ "$1" == "--save" ]; then
+    service iptables save
+    service ip6tables save
+fi
