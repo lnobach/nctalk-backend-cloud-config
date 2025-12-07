@@ -88,7 +88,7 @@ allowall = false
 # same value as configured in the Nextcloud admin ui.
 secret = $NC_SHAREDSECRET
 timeout = 10
-connectionsperhost = 8
+connectionsperhost = 16
 
 [nats]
 url = nats://localhost:4222
@@ -136,14 +136,13 @@ dtls_accept_selfsigned = true
 
 [media]
 ipv6 = true
-rtp_port_range = 20000-20100
+rtp_port_range = 20000-21000
 
-[nat]
-nice_debug = false
-ice_ignore_list = "vmnet"
-full_trickle = true
-stun_server = stun.l.google.com
-stun_port = 19302
+[plugins]
+disable = libjanus_echotest.so,libjanus_nosip.so,,libjanus_recordplay.so,libjanus_streaming.so,libjanus_textroom.so,libjanus_videocall.so
+
+[events]
+broadcast = true
 EOF
 
 cat << EOF > "$CONFIGDIR/janus/janus.plugin.videoroom.jcfg"
@@ -151,7 +150,6 @@ general: {
 #    admin_key = "$janussecret"
 }
 EOF
-
 cat << EOF > "$CONFIGDIR/janus/janus.transport.websockets.jcfg"
 general: {
 	json = "indented"
@@ -166,20 +164,28 @@ admin: {
 	admin_wss = false
 }
 EOF
-
-cat << EOF > "$CONFIGDIR/janus/janus.transport.http.jcfg"
+cat << EOF > "$CONFIGDIR/janus/janus.eventhandler.wsevh.jcfg"
 general: {
-	json = "indented"
-	base_path = "/janus"
-	http = true
-	port = 8088
-	https = false
+    enabled = false
+    events = "webrtc,handles,media"
+    backend = "ws://[::1]:8080/spreed"
+    subprotocol = "janus-events"
+    ws_logging = "debug"
 }
-admin: {
-	admin_base_path = "/admin"
-	admin_http = false
-	admin_port = 7088
-	admin_https = false
+EOF
+cat << EOF > "$CONFIGDIR/janus/janus.eventhandler.gelfevh.jcfg"
+general: {
+    enabled = false
+}
+EOF
+cat << EOF > "$CONFIGDIR/janus/janus.eventhandler.sampleevh.jcfg"
+general: {
+    enabled = false
+}
+EOF
+cat << EOF > "$CONFIGDIR/janus/janus.transport.pfunix.jcfg"
+general: {
+    enabled = false
 }
 EOF
 chgrp "$JANUS_GID" "$CONFIGDIR/janus/janus.cfg"
@@ -188,22 +194,20 @@ chgrp "$JANUS_GID" "$CONFIGDIR"/janus/*.jcfg
 cat << EOF > "$CONFIGDIR/coturn.conf"
 listening-port=3478
 tls-listening-port=5349
+min-port=49152
+max-port=49408
 fingerprint
 no-cli
-lt-cred-mech
+#lt-cred-mech
 use-auth-secret
 static-auth-secret=$TURNSECRET
 realm=$HOSTFQDN
 total-quota=100
 bps-capacity=0
 stale-nonce=600
-cert=/etc/coturn/janus.crt
-pkey=/etc/coturn/janus.key
+cert=/etc/coturn/coturn.crt
+pkey=/etc/coturn/coturn.key
 cipher-list=“ECDHE-RSA-AES256-GCM-SHA512:DHE-RSA-AES256-GCM-SHA512:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-SHA384″
-no-loopback-peers
 no-multicast-peers
-#dh-file=/etc/nginx/ssl/dhparams.pem
-no-tlsv1
-no-tlsv1_1
 EOF
 chgrp "$COTURN_GID" "$CONFIGDIR"/coturn.conf

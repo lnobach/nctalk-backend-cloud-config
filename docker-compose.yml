@@ -28,7 +28,7 @@ services:
         network_mode: host
         restart: unless-stopped
         hostname: spreedbackend
-        image: ghcr.io/lnobach/janus-gateway:1.3.0
+        image: ghcr.io/lnobach/janus-gateway:1.3.3
         command: ["/entrypoint", "-F", "/config", "-C", "/config/janus.cfg"]
         environment:
             - COPYCERT=/etc/letsencrypt/live/${HOSTFQDN}/fullchain.pem

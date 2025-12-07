@@ -32,13 +32,13 @@ resource "hcloud_primary_ip" "vb-ip4" {
 resource "hcloud_rdns" "vb-rdns4" {
   primary_ip_id = hcloud_primary_ip.vb-ip4.id
   ip_address    = hcloud_primary_ip.vb-ip4.ip_address
-  dns_ptr       = var.frontend_domain
+  dns_ptr       = var.backend_domain
 }
 
 resource "hcloud_rdns" "vb-rdns6" {
   primary_ip_id = hcloud_primary_ip.vb-ip6.id
   ip_address    = cidrhost(hcloud_primary_ip.vb-ip6.ip_network, 1)
-  dns_ptr       = var.frontend_domain
+  dns_ptr       = var.backend_domain
 }
 
 
@@ -52,9 +52,7 @@ resource "hcloud_server" "vb" {
   server_type = "cx23"
   ssh_keys    = data.hcloud_ssh_keys.my_keys.ssh_keys.*.id
   user_data = templatefile("${path.module}/../../cloud-config.template.yaml", {
-    cc_server_ipv4       = hcloud_primary_ip.vb-ip4.ip_address
-    cc_server_ipv6       = cidrhost(hcloud_primary_ip.vb-ip6.ip_network, 1)
-    cc_frontend_domain   = var.frontend_domain
+    cc_backend_domain    = var.backend_domain
     cc_letsencrypt_mail  = var.letsencrypt_mail
     cc_nc_endpoint       = var.nc_endpoint
     cc_nc_sharedsecret   = var.nc_sharedsecret

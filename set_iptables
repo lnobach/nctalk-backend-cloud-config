@@ -21,11 +21,12 @@ ip6tables -A INPUT -p ipv6-icmp -j ACCEPT
 ip46tables -A INPUT -p tcp --dport "$SSH_PORT" -j ACCEPT
 ip46tables -A INPUT -p tcp --dport 80 -j ACCEPT
 ip46tables -A INPUT -p tcp --dport 443 -j ACCEPT
-ip46tables -A INPUT -p udp --dport 20000:20100 -j ACCEPT # janus
+ip46tables -A INPUT -p udp --dport 20000:21000 -j ACCEPT # janus
 ip46tables -A INPUT -p udp --dport 3478 -j ACCEPT # coturn
 ip46tables -A INPUT -p tcp --dport 3478 -j ACCEPT # coturn
 ip46tables -A INPUT -p udp --dport 5349 -j ACCEPT # coturn
 ip46tables -A INPUT -p tcp --dport 5349 -j ACCEPT # coturn
+ip46tables -A INPUT -p udp --dport 49152:49408 -j ACCEPT # coturn
 ip46tables -A INPUT -j REJECT
 
 if [ "$1" == "--save" ]; then

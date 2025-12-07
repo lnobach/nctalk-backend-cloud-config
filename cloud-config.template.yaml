@@ -33,12 +33,11 @@ write_files:
     permissions: '0600'
     content: |
         SSH_PORT=${cc_ssh_port}
-        HOSTFQDN=${cc_frontend_domain}
+        HOSTFQDN=${cc_backend_domain}
         CONFIGDIR=/config
         CERTBOT_EMAIL=${cc_letsencrypt_mail}
         NC_ENDPOINT=${cc_nc_endpoint}
         NC_SHAREDSECRET=${cc_nc_sharedsecret}
-        EXTIP=${cc_server_ipv4}
         TURNSECRET=${cc_turn_sharedsecret}
 
 
@@ -59,7 +58,7 @@ runcmd:
   - systemctl enable ip6tables
   - docker --version
   - docker compose version
-  - git clone --depth=1 -b leo-dev 'https://github.com/lnobach/nctalk-backend-cloud-config' /opt/app
+  - git clone --depth=1 'https://github.com/lnobach/nctalk-backend-cloud-config' /opt/app
   - mv /opt/.env /opt/app/.env
   - /opt/app/set_iptables --save
   - /opt/app/init_config
