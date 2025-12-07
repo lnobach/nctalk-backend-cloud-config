@@ -3,8 +3,8 @@ variable "hcloud_token" {
   description = "Hetzner Cloud token (can be obtained from the console)"
 }
 
-variable "frontend_domain" {
-  description = "The domain name used for frontend access. Required for ACME/Let's Encrypt"
+variable "backend_domain" {
+  description = "The domain name used for accessing the backend. Required for ACME/Let's Encrypt"
 }
 variable "letsencrypt_mail" {
   description = "E-Mail address passed to Let's Encrypt"
@@ -15,11 +15,17 @@ variable "location" {
   default     = "fsn1"
 }
 
-variable "nc_endpoint" {}
+variable "nc_endpoint" {
+  description = "The domain name of your Nextcloud instance using this backend."
+}
 
-variable "nc_sharedsecret" {}
+variable "nc_sharedsecret" {
+  description = "The shared secret used between Nextcloud and the backend instance. Must be set equally in your Talk settings in Nextcloud."
+}
 
-variable "turn_sharedsecret" {}
+variable "turn_sharedsecret" {
+  description = "The shared secret for the TURN server. Must be set equally in your Talk settings in Nextcloud."
+}
 
 variable "ssh_port" {
   description = "SSH admin port"

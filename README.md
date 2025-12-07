@@ -10,11 +10,12 @@ maintaining full control over your server, and keeping your other Nextcloud serv
 This framework automatically spins up a Nextcloud Talk High-Performance Backend instance for personal / small office use in 
 a couple of minutes. You need a cloud provider supporting user data (cloud-config) input on VM creation.
 
-This setup is not optimized for horizontal scaling for large installations. Consider using Kubernetes in this case.
+This setup is not yet optimized for horizontal scaling for large installations, but might be in the future by using load
+balancers and extending the Terraform configuration accordingly.
 
 This setup is targeted to be up to date on creation, but does not maintain automatic lifecycling of the NC Talk backend and 
 dependencies (including security patches) once it is up.
-Consider recreating the instance regularly to keep it up to date, which is easy, because it is automated :)
+Consider recreating the instance regularly to keep it up to date, which is easy, because it is automated.
 
 ## Microservice inventory
 
@@ -29,7 +30,6 @@ The following services are automatically spun up via docker-compose:
 To increase security and trust in the container images provided by me, all of them are Docker Hub autobuilds 
 from GitHub code:
 
-- [lnobach/nginx-certbot](https://hub.docker.com/r/lnobach/nginx-certbot), based on a fork of [staticfloat/docker-nginx-certbot](https://github.com/staticfloat/docker-nginx-certbot),
 - [lnobach/nextcloud-spreed-signaling](https://hub.docker.com/r/lnobach/nextcloud-spreed-signaling), based on a fork of [strukturag/nextcloud-spreed-signaling](https://github.com/strukturag/nextcloud-spreed-signaling),
 - [lnobach/janus-gateway](https://hub.docker.com/r/lnobach/janus-gateway), based on [lnobach/janus-docker-builder
 ](https://github.com/lnobach/janus-docker-builder).
@@ -38,28 +38,27 @@ from GitHub code:
 
 - Certificate checking for WebRTC DTLS encryption is currently **disabled**, because the certificates validity checking does not 
 correctly work. Note that this [is a general issue of WebRTC DTLS](https://github.com/meetecho/janus-gateway/blob/5ec8568709c483ae89b1aa77e127d14c3b59428c/conf/janus.jcfg.sample.in#L162) and is probably OK for now, but be aware of it. 
-- A small fraction of processes still run as root in Docker, which must be improved from a security point of view.
 
-## How to set up - the UI way
 
-- Copy `vars.bash.example` to `vars.bash` and adapt the variables explained there.
-- Run `./make.sh` to generate `cloud-config.yaml`.
-- Create a new Elastic IP (v4 and v6).
-- Let a DNS A and AAAA record point to the Elastic IP.
-- Create a new VM with a Rocky Linux 10 image and supply the content of `cloud-config.yaml` as user data.
-**SSH public key authentication will be enforced.**
-- Assign the Elastic IP to your VM.
-- Wait a couple of minutes.
-- Under the settings in your Nextcloud instance, open the *Talk* tabs, enter the URL `https://<domainname>/standalone-signaling` and 
-enter your secret key.
-- Enjoy your Nextcloud Talk backend via Web using your DNS name :)
-
-## How to set up - the Terraform way
+## How to set up - the Terraform way (recommended)
 
 There are Terraform implementations available.
 See `terraform/<provider>/README.md` for details.
 
 - [hetzner - Hetzner Cloud](./terraform/hetzner)
+
+## How to set up - the UI way (not recommended)
+
+- Copy `vars.bash.example` to `vars.bash` and adapt the variables explained there.
+- Run `./make.sh` to generate `cloud-config.yaml`.
+- Create a new VM with a Rocky Linux 10 image and supply the content of `cloud-config.yaml` as user data.
+**SSH public key authentication will be enforced.**
+- Assign the Elastic IP to your VM.
+- Set a DNS A and optionally AAAA record to point to the IP address(es) of your VM.
+- Wait a couple of minutes.
+- Under the settings in your Nextcloud instance, open the *Talk* tabs, enter the URL `https://<domainname>/standalone-signaling` and 
+enter your secret key.
+- Enjoy your Nextcloud Talk backend via Web using your DNS name.
 
 ## How to tell Nextcloud to use your new backend
 
@@ -74,9 +73,7 @@ See `terraform/<provider>/README.md` for details.
 ## Troubleshooting and Insights
 
 - You can log in via SSH to your box (root) and follow the cloud-init output during setup with
-`tail -f /var/log/messages | grep cloud-init`.
+`tail -f /var/log/cloud-init-output.log`.
 - If something beyond cloud-init is not working, try to check the log output of docker-compose first with
-`ssh -t root@<ip> "cd /opt/app; docker-compose logs --tail=100 -f`.
-- It is recommended to have an Elastic IP in place to keep the public address if instances are
-recreated. If you don't want to use it, remove the `/opt/app/tools/set_elastic_address` execution
-from your cloud-config.
+`ssh -t root@<ip> "cd /opt/app; docker compose logs --tail=100 -f`.
+
