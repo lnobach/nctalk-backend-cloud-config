@@ -4,7 +4,7 @@ cc_backend_domain=
 # The e-mail address passed to Let's Encrypt.
 cc_letsencrypt_mail=
 
-# The domain name of your Nextcloud instance using this backend.
+# The domain name of your Nextcloud instance using this backend. Comma-separate if you have multiple ones.
 cc_nc_endpoint=
 
 # The shared secret used between Nextcloud and the backend instance. Must be set equally in your Talk settings in Nextcloud.

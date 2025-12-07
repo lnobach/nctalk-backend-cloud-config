@@ -1,5 +1,7 @@
 # Nextcloud Talk Backend Mini-Infrastructure for Hetzner
 
+Requires [Terraform](https://developer.hashicorp.com/terraform) >= 1.14
+
 The mini infrastructure will consist of a single VM with v4 and v6 primary addresses and rDNS entries.
 
 ## How to bring up and update
@@ -26,13 +28,13 @@ Because the records might not be set up at the beginning, the first deployment m
 When destroying the server, you can now preserve your primary IP addresses (at a small monthly fee)
 to be able to spin up the server at a later time with the same addresses (then you can also keep your
 DNS records the same).
-If you want to preserve them this, just destroy the server itself:
+If you want to preserve them, just destroy the server only:
 
 ```
 terraform destroy -target=hcloud_server.vb
 ```
 
-With a later `terraform apply`, the server will claim the same primary IP addresses again.
+With a later `terraform apply`, a new VM will be started and will claim the same primary IP addresses again.
 
 If you want to lose your IP addresses, then hit:
 

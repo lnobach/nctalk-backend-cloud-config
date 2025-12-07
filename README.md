@@ -3,7 +3,7 @@
 If you have a private Nextcloud server with a weak link (e.g. at home or in an office branch) and want to use Nextcloud Talk with
 its default backend, the line might be exhausted by the traffic and your video/audio will start to stutter.
 Nextcloud Talk provides a high-performance backend to manage conferencing sessions, which has been 
-recently [open-sourced](https://github.com/nextcloud/spreed/issues/3106).
+[open-sourced](https://github.com/nextcloud/spreed/issues/3106).
 Thus, it might be beneficial to *outsource* your video conferencing sessions to a dedicated cloud server with a strong link,
 maintaining full control over your server, and keeping your other Nextcloud services hosted by your own.
 
@@ -27,12 +27,12 @@ The following services are automatically spun up via docker-compose:
 - **nats**: NATS streaming server because required by spreedbackend.
 - **coturn** TURN relay. Ports 3478,5349 (TCP/UDP) and 49160-49200 (UDP) exposed to public.
 
-To increase security and trust in the container images provided by me, all of them are Docker Hub autobuilds 
+To increase security and trust in the container images provided, all of them are GitHub Actions builds 
 from GitHub code:
 
-- [lnobach/nextcloud-spreed-signaling](https://hub.docker.com/r/lnobach/nextcloud-spreed-signaling), based on a fork of [strukturag/nextcloud-spreed-signaling](https://github.com/strukturag/nextcloud-spreed-signaling),
-- [lnobach/janus-gateway](https://hub.docker.com/r/lnobach/janus-gateway), based on [lnobach/janus-docker-builder
-](https://github.com/lnobach/janus-docker-builder).
+- [ghcr.io/lnobach/nextcloud-spreed-signaling](https://github.com/lnobach/misc-docker-ci/pkgs/container/nextcloud-spreed-signaling), based on [strukturag/nextcloud-spreed-signaling](https://github.com/strukturag/nextcloud-spreed-signaling),
+- [ghcr.io/lnobach/janus-gateway](https://github.com/lnobach/misc-docker-ci/pkgs/container/janus-gateway), based on [lnobach/misc-docker-ci/janus-gateway/Dockerfile](https://github.com/lnobach/misc-docker-ci/blob/master/janus-gateway/Dockerfile).
+- [ghcr.io/lnobach/coturn](https://github.com/lnobach/misc-docker-ci/pkgs/container/coturn), based on [lnobach/misc-docker-ci/coturn/Dockerfile](https://github.com/lnobach/misc-docker-ci/blob/master/coturn/Dockerfile).
 
 ## Open issues
 
@@ -47,13 +47,14 @@ See `terraform/<provider>/README.md` for details.
 
 - [hetzner - Hetzner Cloud](./terraform/hetzner)
 
+With Terraform, you can set up your infrastructure with just a few variables and commands. This is probably the easiest and most error-free way.
+
 ## How to set up - the UI way (not recommended)
 
 - Copy `vars.bash.example` to `vars.bash` and adapt the variables explained there.
 - Run `./make.sh` to generate `cloud-config.yaml`.
 - Create a new VM with a Rocky Linux 10 image and supply the content of `cloud-config.yaml` as user data.
 **SSH public key authentication will be enforced.**
-- Assign the Elastic IP to your VM.
 - Set a DNS A and optionally AAAA record to point to the IP address(es) of your VM.
 - Wait a couple of minutes.
 - Under the settings in your Nextcloud instance, open the *Talk* tabs, enter the URL `https://<domainname>/standalone-signaling` and 
@@ -69,6 +70,9 @@ enter your secret key.
   - `https://<domainname>/standalone-signaling`
   - Enable checking of the SSL certificate
   - Enter the shared secret (variable `nc_sharedsecret`).
+
+If you keep the variables for setting up the backend infrastructure, you don't need to repeat this
+for every attempt to set up the backend.
 
 ## Troubleshooting and Insights
 
