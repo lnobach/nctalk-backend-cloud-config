@@ -26,6 +26,7 @@ ip46tables -A INPUT -p udp --dport 3478 -j ACCEPT # coturn
 ip46tables -A INPUT -p tcp --dport 3478 -j ACCEPT # coturn
 ip46tables -A INPUT -p udp --dport 5349 -j ACCEPT # coturn
 ip46tables -A INPUT -p tcp --dport 5349 -j ACCEPT # coturn
+ip46tables -A INPUT -p udp --dport 49152:49408 -j ACCEPT # coturn
 ip46tables -A INPUT -j REJECT
 
 if [ "$1" == "--save" ]; then
