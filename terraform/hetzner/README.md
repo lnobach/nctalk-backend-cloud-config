@@ -21,7 +21,7 @@ terraform apply
 The Terraform script will output your IPv4/6 addresses after successful deployment.
 Currently the Terraform provider does not support setting DNS records, so create a DNS A and AAAA record with your spreed backend's domain `TF_VAR_backend_domain` pointing to your primary IPv4 and IPv6 addresses.
 
-Because the records might not be set up at the beginning, the first deployment might not run, because Let's Encrypt + Certbot cannot generate certificates. In this case, just log via SSH in and restart the services with `cd /opt/app; docker-compose down; docker-compose up -d` as soon as you have validated that your DNS records are now active.
+Because the records might not be set up at the beginning, the first deployment might not run, because Let's Encrypt + Certbot cannot generate certificates. In this case, just log via SSH in and restart the services with `cd /opt/app; docker compose down; docker compose up -d` as soon as you have validated that your DNS records are now active.
 
 ## How to destroy
 

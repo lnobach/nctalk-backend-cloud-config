@@ -38,7 +38,6 @@ write_files:
         CERTBOT_EMAIL=${cc_letsencrypt_mail}
         NC_ENDPOINT=${cc_nc_endpoint}
         NC_SHAREDSECRET=${cc_nc_sharedsecret}
-        EXTIP=${cc_server_ipv4}
         TURNSECRET=${cc_turn_sharedsecret}
 
 

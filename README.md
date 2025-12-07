@@ -17,7 +17,7 @@ This setup is targeted to be up to date on creation, but does not maintain autom
 dependencies (including security patches) once it is up.
 Consider recreating the instance regularly to keep it up to date, which is easy, because it is automated.
 
-## Microservice inventory
+## Docker microservices overview
 
 The following services are automatically spun up via docker-compose:
 
@@ -71,7 +71,7 @@ enter your secret key.
   - Enable checking of the SSL certificate
   - Enter the shared secret (variable `nc_sharedsecret`).
 
-If you keep the variables for setting up the backend infrastructure, you don't need to repeat this
+If you keep the variables the same, you don't need to repeat this
 for every attempt to set up the backend.
 
 ## Troubleshooting and Insights

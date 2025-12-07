@@ -52,8 +52,6 @@ resource "hcloud_server" "vb" {
   server_type = "cx23"
   ssh_keys    = data.hcloud_ssh_keys.my_keys.ssh_keys.*.id
   user_data = templatefile("${path.module}/../../cloud-config.template.yaml", {
-    cc_server_ipv4       = hcloud_primary_ip.vb-ip4.ip_address
-    cc_server_ipv6       = cidrhost(hcloud_primary_ip.vb-ip6.ip_network, 1)
     cc_backend_domain    = var.backend_domain
     cc_letsencrypt_mail  = var.letsencrypt_mail
     cc_nc_endpoint       = var.nc_endpoint
