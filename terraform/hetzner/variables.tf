@@ -38,6 +38,6 @@ variable "name" {
 }
 
 variable "ssh_key_selector" {
-  description = "The SSH key selector which will be used for login - see https://docs.hetzner.cloud/#overview-label-selector"
+  description = "The SSH key selector which will be used for login - see https://docs.hetzner.cloud/reference/cloud#label-selector"
   default     = "purpose=admin"
 }

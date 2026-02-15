@@ -4,6 +4,10 @@ Requires [Terraform](https://developer.hashicorp.com/terraform) >= 1.14
 
 The mini infrastructure will consist of a single VM with v4 and v6 primary addresses and rDNS entries.
 
+Be sure that you have added your SSH keys to the Hetzner Cloud Console if you want to use SSH e.g. for
+debugging. The SSH keys that Terraform uses for your instance must carry the label `purpose=admin`.
+For more information, see [Label Selectors](https://docs.hetzner.cloud/reference/cloud#label-selector).
+
 ## How to bring up and update
 
 ```
