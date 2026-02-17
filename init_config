@@ -117,7 +117,7 @@ secret = $TURNSECRET
 # TURN REST API.
 servers = turns:$HOSTFQDN:5349?transport=udp,turns:$HOSTFQDN:5349?transport=tcp,turn:localhost:3478?transport=udp,turn:localhost:3478?transport=tcp
 EOF
-chgrp 1000 "$CONFIGDIR/spreedbackend/server.conf"
+chgrp 850 "$CONFIGDIR/spreedbackend/server.conf"
 
 umask 0027
 mkdir -p "$CONFIGDIR/janus/"
