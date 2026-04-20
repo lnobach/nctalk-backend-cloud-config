@@ -21,7 +21,7 @@ services:
 
     nats:
         network_mode: host
-        image: nats:2.12.6
+        image: nats:2.12.7
         hostname: nats
 
     janus:
