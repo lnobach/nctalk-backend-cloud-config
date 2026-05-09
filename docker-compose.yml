@@ -2,7 +2,7 @@ services:
 
     proxy:
         network_mode: host
-        image: jonasal/nginx-certbot:6.1.0-nginx1.29.5-alpine
+        image: jonasal/nginx-certbot:6.2.0-nginx1.29.8-alpine
         restart: unless-stopped
         hostname: proxy
         volumes:
@@ -15,7 +15,7 @@ services:
         network_mode: host
         restart: unless-stopped
         hostname: spreedbackend
-        image: ghcr.io/lnobach/nextcloud-spreed-signaling:2.1.0
+        image: ghcr.io/lnobach/nextcloud-spreed-signaling:2.1.1
         volumes:
             - ${CONFIGDIR}/spreedbackend:/config:ro
 
@@ -28,7 +28,7 @@ services:
         network_mode: host
         restart: unless-stopped
         hostname: spreedbackend
-        image: ghcr.io/lnobach/janus-gateway:1.4.0
+        image: ghcr.io/lnobach/janus-gateway:1.4.1
         command: ["/entrypoint", "-F", "/config", "-C", "/config/janus.cfg"]
         environment:
             - COPYCERT=/etc/letsencrypt/live/${HOSTFQDN}/fullchain.pem
@@ -41,7 +41,7 @@ services:
         network_mode: host
         restart: unless-stopped
         hostname: coturn
-        image: ghcr.io/lnobach/coturn:4.8.0-alpine
+        image: ghcr.io/lnobach/coturn:4.10.0-alpine
         environment:
             - COPYCERT=/etc/letsencrypt/live/${HOSTFQDN}/fullchain.pem
             - COPYKEY=/etc/letsencrypt/live/${HOSTFQDN}/privkey.pem
