@@ -2,7 +2,7 @@ services:
 
     proxy:
         network_mode: host
-        image: jonasal/nginx-certbot:6.2.0-nginx1.29.8-alpine
+        image: jonasal/nginx-certbot:6.2.0-nginx1.31.1-alpine
         restart: unless-stopped
         hostname: proxy
         volumes:
@@ -41,7 +41,7 @@ services:
         network_mode: host
         restart: unless-stopped
         hostname: coturn
-        image: ghcr.io/lnobach/coturn:4.11.0-alpine
+        image: ghcr.io/lnobach/coturn:4.12.0-alpine
         environment:
             - COPYCERT=/etc/letsencrypt/live/${HOSTFQDN}/fullchain.pem
             - COPYKEY=/etc/letsencrypt/live/${HOSTFQDN}/privkey.pem
