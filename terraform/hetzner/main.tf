@@ -9,9 +9,8 @@ data "hcloud_ssh_keys" "my_keys" {
 
 resource "hcloud_primary_ip" "vb-ip6" {
   name          = "${var.name}-ip6"
-  datacenter    = "fsn1-dc14"
+  location    = var.location
   type          = "ipv6"
-  assignee_type = "server"
   auto_delete   = false
   labels = {
     "usage" : var.name
@@ -20,9 +19,8 @@ resource "hcloud_primary_ip" "vb-ip6" {
 
 resource "hcloud_primary_ip" "vb-ip4" {
   name          = "${var.name}-ip4"
-  datacenter    = "fsn1-dc14"
+  location    = var.location
   type          = "ipv4"
-  assignee_type = "server"
   auto_delete   = false
   labels = {
     "usage" : var.name
