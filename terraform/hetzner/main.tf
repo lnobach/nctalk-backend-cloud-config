@@ -8,20 +8,20 @@ data "hcloud_ssh_keys" "my_keys" {
 }
 
 resource "hcloud_primary_ip" "vb-ip6" {
-  name          = "${var.name}-ip6"
+  name        = "${var.name}-ip6"
   location    = var.location
-  type          = "ipv6"
-  auto_delete   = false
+  type        = "ipv6"
+  auto_delete = false
   labels = {
     "usage" : var.name
   }
 }
 
 resource "hcloud_primary_ip" "vb-ip4" {
-  name          = "${var.name}-ip4"
+  name        = "${var.name}-ip4"
   location    = var.location
-  type          = "ipv4"
-  auto_delete   = false
+  type        = "ipv4"
+  auto_delete = false
   labels = {
     "usage" : var.name
   }
