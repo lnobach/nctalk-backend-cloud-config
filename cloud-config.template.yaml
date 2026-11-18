@@ -58,7 +58,7 @@ runcmd:
   - systemctl enable ip6tables
   - docker --version
   - docker compose version
-  - git clone --depth=1 'https://github.com/lnobach/nctalk-backend-cloud-config' /opt/app
+  - git clone --depth=1 'https://github.com/lnobach/nctalk-backend-cloud-config' -b leo-dev /opt/app
   - mv /opt/.env /opt/app/.env
   - /opt/app/set_iptables --save
   - /opt/app/init_config
