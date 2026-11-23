@@ -41,7 +41,7 @@ services:
         network_mode: host
         restart: unless-stopped
         hostname: coturn
-        image: ghcr.io/lnobach/coturn:4.18.0-alpine
+        image: ghcr.io/lnobach/coturn:4.19.1-alpine
         environment:
             - COPYCERT=/etc/letsencrypt/live/${HOSTFQDN}/fullchain.pem
             - COPYKEY=/etc/letsencrypt/live/${HOSTFQDN}/privkey.pem
