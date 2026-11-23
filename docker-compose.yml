@@ -2,7 +2,7 @@ services:
 
     proxy:
         network_mode: host
-        image: jonasal/nginx-certbot:6.2.0-nginx1.31.8-alpine
+        image: jonasal/nginx-certbot:6.2.0-nginx1.31.9-alpine
         restart: unless-stopped
         hostname: proxy
         volumes:
